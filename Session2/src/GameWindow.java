@@ -128,7 +128,7 @@ public class GameWindow extends Frame implements Runnable {
         for (int i = 0; i < bulletVector.size(); i++) {
             bulletVector.get(i).draw(backBufferGraphic);
         }
-        
+
         g.drawImage(backBuffered, 0, 0, 800, 600, null);
     }
 
@@ -140,6 +140,9 @@ public class GameWindow extends Frame implements Runnable {
                 Thread.sleep(17);
                 for (int i = 0; i < bulletVector.size(); i++) {
                     bulletVector.get(i).getBulletModel().move(0, -5);
+                    if(bulletVector.get(i).getBulletModel().getY()<0){
+                        bulletVector.remove(i);
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
