@@ -3,6 +3,10 @@ package Controllers;
 import Models.Model;
 import Views.View;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
+
 import static Utils.Utils.loadImage;
 
 /**
@@ -15,13 +19,12 @@ public class EnemyBulletController extends Controller {
     }
 
     public void run() {
-        this.model.move(0, 1);
+        this.model.move(0, 5);
     }
 
     public static EnemyBulletController creatEnemyBulletController(int x, int y) {
         return new EnemyBulletController(
                 new Model(x - 11, y - 10, 32, 32),
                 new View(loadImage("resources/enemy_bullet.png")));
-
     }
 }

@@ -2,6 +2,7 @@ import Controllers.BulletController;
 import Controllers.EnemyPlaneController;
 import Controllers.KeySetting;
 import Controllers.PlaneController;
+import Views.Animation;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -9,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import java.util.Vector;
 
 import static Utils.Utils.loadImage;
@@ -22,12 +24,19 @@ public class GameWindow extends Frame implements Runnable {
     BufferedImage backBuffered;
 
     PlaneController planeController;
-    EnemyPlaneController enemyAircraft;
+
+    EnemyPlaneController enemyPlaneController;
     Vector<BulletController> bulletVector;
 
     KeySetting keySetting;
+    Animation animation;
+
+    Random random;
+    int enemyPlaneX = 250;
 
     public GameWindow() {
+
+        random = new Random();
 
         bulletVector = new Vector<>();
 
@@ -35,7 +44,8 @@ public class GameWindow extends Frame implements Runnable {
 
         planeController = PlaneController.creatPlane(350, 400);
         planeController.setKeySetting(keySetting);
-        enemyAircraft = EnemyPlaneController.creatEnemyAircraft(300, 80);
+
+        enemyPlaneController = EnemyPlaneController.creatEnemyPlane(enemyPlaneX, 30);
 
         addWindowListener(new WindowListener() {
             @Override
@@ -114,12 +124,17 @@ public class GameWindow extends Frame implements Runnable {
 
         backBufferGraphic.drawImage(background, 0, 0, 800, 600, null);
         planeController.draw(backBufferGraphic);
-        if (enemyAircraft != null) {
-            enemyAircraft.draw(backBufferGraphic);
-            for (int i = 0; i < enemyAircraft.getEnemyBulletControllerVector().size(); i++) {
-                enemyAircraft.getEnemyBulletControllerVector().get(i).draw(backBufferGraphic);
+
+        if (enemyPlaneController != null) {
+            enemyPlaneController.draw(backBufferGraphic);
+            for (int i = 0; i < enemyPlaneController.getEnemyBulletControllerVector().size(); i++) {
+                enemyPlaneController.getEnemyBulletControllerVector().get(i).draw(backBufferGraphic);
+            }
+            if (animation != null) {
+                animation.draw(backBufferGraphic);
             }
         }
+
         for (int i = 0; i < bulletVector.size(); i++) {
             bulletVector.get(i).draw(backBufferGraphic);
         }
@@ -133,31 +148,43 @@ public class GameWindow extends Frame implements Runnable {
             try {
                 this.repaint();
                 Thread.sleep(17);
-                if (enemyAircraft != null) {
-                    enemyAircraft.run();
-                    for (int i = 0; i < enemyAircraft.getEnemyBulletControllerVector().size(); i++) {
-                        enemyAircraft.getEnemyBulletControllerVector().get(i).getModel().move(0, 1);
-                    }
+
+                if (enemyPlaneController != null) {
+                    enemyPlaneController.run();
                 }
+
                 for (int i = 0; i < bulletVector.size(); i++) {
 
                     bulletVector.get(i).run();
 
-                    if (enemyAircraft != null) {
+                    if (enemyPlaneController != null) {
                         //bắt sự kiện bắn trúng enemy.
-                        if (bulletVector.get(i).getModel().getX() > enemyAircraft.getModel().getX() &&
-                                bulletVector.get(i).getModel().getX() < enemyAircraft.getModel().getX() + 65 &&
-                                bulletVector.get(i).getModel().getY() < enemyAircraft.getModel().getY() + 50) {
-                            enemyAircraft = null;
+                        if (bulletVector.get(i).getModel().getX() >= enemyPlaneController.getModel().getX() - 5 &&
+                                bulletVector.get(i).getModel().getX() <= enemyPlaneController.getModel().getX() + 65 &&
+                                bulletVector.get(i).getModel().getY() < enemyPlaneController.getModel().getY() + 40) {
+
+                            animation = new Animation(enemyPlaneController.getModel(),
+                                    enemyPlaneController.getView(),
+                                    "resources/explosion1.png,resources/explosion2.png,resources/explosion3.png,resources/explosion4.png,resources/explosion5.png,resources/explosion6.png");
+
+                            enemyPlaneX = random.nextInt(500) + 100;
+                            enemyPlaneController = EnemyPlaneController.creatEnemyPlane(enemyPlaneX, -20);
                             bulletVector.remove(i);
-                        } else if (bulletVector.get(i).getModel().getY() < 0) {
-                            bulletVector.remove(i);
+
+                        } else {
+
+                            if (bulletVector.get(i).getModel().getY() < 0) {
+                                bulletVector.remove(i);
+                            }
+                            if (enemyPlaneController.getModel().getY() > 600) {
+                                enemyPlaneX = random.nextInt(500) + 100;
+                                enemyPlaneController = EnemyPlaneController.creatEnemyPlane(enemyPlaneX, -10);
+                            }
                         }
 
                     }
 
                 }
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
