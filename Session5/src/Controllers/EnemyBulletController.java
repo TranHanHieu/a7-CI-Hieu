@@ -40,7 +40,6 @@ public class EnemyBulletController extends Controller implements Body {
         if (other instanceof PlaneController) {
             //System.out.println("aaaaaa");
             this.model.setAlive(false);
-            System.out.println(model.isAlive());
         }
     }
 }

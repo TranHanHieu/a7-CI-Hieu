@@ -76,7 +76,7 @@ public class EnemyPlaneController extends Controller implements Body {
         //làm sao để viết lại class timecount
         for (int i = 0; i < enemyBulletControllerVector.size(); i++) {
             enemyBulletControllerVector.get(i).run();
-            if (enemyBulletControllerVector.get(i).getModel().getY() > 600) {
+            if (enemyBulletControllerVector.get(i).getModel().getY() > 600||!enemyBulletControllerVector.get(i).getModel().isAlive()) {
                 enemyBulletControllerVector.remove(i);
             }
         }
@@ -88,7 +88,7 @@ public class EnemyPlaneController extends Controller implements Body {
             hp -= 50;
             System.out.println("Hp Enemy : " + hp);
             if (hp == 0) {
-                this.model.setAlive(false);
+                this.getModel().setAlive(false);
                 animation = new Animation(model, view, "resources/explosion1.png,resources/explosion2.png,resources/explosion3.png,resources/explosion4.png,resources/explosion5.png,resources/explosion6.png");
             }
         }

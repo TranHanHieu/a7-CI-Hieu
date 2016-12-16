@@ -72,7 +72,6 @@ public class PlaneController extends Controller implements Body {
     @Override
     public void onContact(Body other) {
         if (other instanceof EnemyBulletController || other instanceof EnemyPlaneController) {
-            //System.out.println("BBBBBBBBB");
             this.model.setAlive(false);
             animation = new Animation(model, view, "resources/explosion1.png,resources/explosion2.png,resources/explosion3.png,resources/explosion4.png,resources/explosion5.png,resources/explosion6.png");
 
