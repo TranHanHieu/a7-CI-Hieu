@@ -49,9 +49,11 @@ public class EnemyPlaneController extends Controller implements Body {
 
     public void addBullet() {
 
-        enemyBulletController = creatEnemyBulletController(getModel().getMidX() - enemyBulletController.WIDTH / 2 + 10,
-                getModel().getBottom());
+        int bulletX = getModel().getMidX() - enemyBulletController.WIDTH / 2 + 10;
+        int bulletY = getModel().getBottom();
+        enemyBulletController = creatEnemyBulletController(bulletX, bulletY);
 
+        //BodyManager.instance.register(enemyBulletController);
         enemyBulletControllerVector.add(enemyBulletController);
     }
 
@@ -69,7 +71,7 @@ public class EnemyPlaneController extends Controller implements Body {
     public void run() {
         this.model.move(0, SPEED);
         timeCounter++;
-        if (timeCounter > 300) {
+        if (timeCounter > 100) {
             addBullet();
             timeCounter = 0;
         }
@@ -88,7 +90,12 @@ public class EnemyPlaneController extends Controller implements Body {
             hp -= 50;
             System.out.println("Hp Enemy : " + hp);
             if (hp == 0) {
-                this.getModel().setAlive(false);
+                System.out.println(enemyBulletController.getModel().isAlive());
+                this.model.setAlive(false);
+                enemyBulletController.getModel().setAlive(false);
+
+                System.out.println(enemyBulletController.getModel().isAlive());
+                System.out.println(model.isAlive());
                 animation = new Animation(model, view, "resources/explosion1.png,resources/explosion2.png,resources/explosion3.png,resources/explosion4.png,resources/explosion5.png,resources/explosion6.png");
             }
         }
