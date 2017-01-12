@@ -78,7 +78,7 @@ public class PlaneController extends Controller implements Body,EventSubcriber {
 
     @Override
     public void onContact(Body other) {
-        if (other instanceof EnemyBulletController ||other instanceof EnemyPlaneController){
+        if (other instanceof EnemyBulletController){
             this.model.setAlive(false);
         }
     }
